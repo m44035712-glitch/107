@@ -1,0 +1,90 @@
+[
+  {
+    "id": "eval-1",
+    "question": "I manufacture stainless steel water bottles. Which Indian Standard applies and what are the testing requirements?",
+    "language": "en",
+    "intent": "FIND_STANDARD",
+    "expectedStandardNumber": "IS 17526:2021",
+    "expectedClause": "5.1",
+    "expectedSourceSnippet": "IS 17526:2021 covers Stainless Steel Vacuum Flasks and Insulated Flasks / Bottles specifying material grade SS 304 / 316, thermal insulation performance, and corrosion resistance.",
+    "groundTruthAnswerSummary": "IS 17526:2021 (for insulated/vacuum bottles) and IS 14454 (for domestic stainless steel flasks). Required tests include thermal insulation retention test, material chemical composition (food grade 304/316), handle/closure leak test, and corrosion resistance under Clause 5.",
+    "category": "Industry - Stainless Steel Products"
+  },
+  {
+    "id": "eval-2",
+    "question": "What is the acceptable limit for total dissolved solids (TDS) and lead in drinking water as per IS 10500?",
+    "language": "en",
+    "intent": "CLAUSE_EXPLANATION",
+    "expectedStandardNumber": "IS 10500:2012",
+    "expectedClause": "4.2",
+    "expectedSourceSnippet": "Table 1 of IS 10500:2012 specifies TDS acceptable limit of 500 mg/l (permissible limit 2000 mg/l in absence of alternate source) and Lead (as Pb) maximum permissible limit of 0.01 mg/l.",
+    "groundTruthAnswerSummary": "Under IS 10500:2012 Table 1 (Organoleptic and Physical Parameters), the acceptable limit for Total Dissolved Solids is 500 mg/L (permissible up to 2000 mg/L). Under Table 2 (Toxic Substances), Lead (Pb) limit is strictly 0.01 mg/L maximum.",
+    "category": "Water Standards"
+  },
+  {
+    "id": "eval-3",
+    "question": "How do I verify if a gold jewellery hallmark is genuine using the 6-digit HUID code?",
+    "language": "en",
+    "intent": "HALLMARKING_VERIFICATION",
+    "expectedStandardNumber": "IS 1417:2016",
+    "expectedClause": "6.1",
+    "expectedSourceSnippet": "Gold hallmarking under IS 1417 comprises three mandatory marks: 1. BIS Standard Logo, 2. Purity/Fineness (e.g., 22K916), and 3. 6-digit alphanumeric Hallmarking Unique Identification (HUID) code verifiable on the BIS Care App.",
+    "groundTruthAnswerSummary": "Check for 3 mandatory marks: BIS Logo, Purity mark (e.g. 22K 916), and the 6-character alphanumeric HUID code. Enter the 6-digit HUID into the 'Verify HUID' feature on the official BIS Care mobile application.",
+    "category": "Consumer - Hallmarking"
+  },
+  {
+    "id": "eval-4",
+    "question": "What is Compulsory Registration Scheme (CRS) Scheme II and does it apply to lithium-ion power banks and mobile batteries?",
+    "language": "en",
+    "intent": "CERTIFICATION_GUIDANCE",
+    "expectedStandardNumber": "IS 16046 (Part 2):2018",
+    "expectedClause": "1.1",
+    "expectedSourceSnippet": "Secondary cells and batteries containing alkaline or other non-acid electrolytes for portable applications fall under BIS Compulsory Registration Scheme (CRS) Scheme-II as per MeitY CRO mandates under IS 16046.",
+    "groundTruthAnswerSummary": "Yes, secondary lithium-ion cells and batteries for portable applications are strictly mandatory under BIS Compulsory Registration Scheme (Scheme II / CRS) governed by IS 16046 (Part 2):2018 / IEC 62133-2.",
+    "category": "Electronics & IT Products"
+  },
+  {
+    "id": "eval-5",
+    "question": "ISI mark kaise verify karein?",
+    "language": "hinglish",
+    "intent": "CONSUMER_ISI_CHECK",
+    "expectedStandardNumber": "IS 14543:2016",
+    "expectedClause": "7.1",
+    "expectedSourceSnippet": "A genuine ISI mark must display the BIS logo, the applicable Indian Standard number (e.g. IS 14543) above the mark, and the 7 or 8 digit CM/L (Certification Marks Licence) number below the mark.",
+    "groundTruthAnswerSummary": "Genuine ISI mark verify karne ke liye 3 cheezein check karein: (1) BIS triangular logo, (2) Upar standard number (e.g., IS:XXXX), aur (3) Neeche 7/8 digit ka CM/L licence number. Is CM/L number ko BIS Care App par 'Verify License' option me daal kar licensee ka naam aur validity check karein.",
+    "category": "Consumer - Multilingual"
+  },
+  {
+    "id": "eval-6",
+    "question": "What are the tensile strength and elongation requirements for TMT steel bars under IS 1786 Fe 500D?",
+    "language": "en",
+    "intent": "TESTING_REQUIREMENTS",
+    "expectedStandardNumber": "IS 1786:2008",
+    "expectedClause": "8.1",
+    "expectedSourceSnippet": "Table 3 of IS 1786:2008 specifies that Fe 500D grade steel bars require minimum 0.2 percent proof stress of 500 N/mm², minimum tensile strength of 565 N/mm² (or TS/YS ratio ≥ 1.10), and minimum total elongation of 16.0 percent.",
+    "groundTruthAnswerSummary": "For Fe 500D under IS 1786:2008 Table 3: Yield stress/proof stress is min 500 MPa, Tensile strength is min 565 MPa (TS/YS ratio >= 1.10), and percentage elongation is min 16.0% with mandatory bend and rebend test without fracture.",
+    "category": "Civil - Steel Reinforcement"
+  },
+  {
+    "id": "eval-7",
+    "question": "Which standard applies to Ordinary Portland Cement (OPC) 53 Grade and what is the 28-day compressive strength requirement?",
+    "language": "en",
+    "intent": "TESTING_REQUIREMENTS",
+    "expectedStandardNumber": "IS 269:2015",
+    "expectedClause": "6.2",
+    "expectedSourceSnippet": "IS 269:2015 (superseding IS 12269) covers Ordinary Portland Cement 33, 43 and 53 grades. The 28-day minimum compressive strength for 53 Grade OPC is 53 MPa (N/mm²).",
+    "groundTruthAnswerSummary": "IS 269:2015 covers OPC 53 Grade. Under Table 2, the minimum 28-day compressive strength requirement is 53.0 MPa with sound Le Chatelier expansion not exceeding 10 mm.",
+    "category": "Civil - Cement"
+  },
+  {
+    "id": "eval-8",
+    "question": "Where can I test packaged drinking water as per IS 14543 in Maharashtra or Delhi?",
+    "language": "en",
+    "intent": "LABORATORY_LOOKUP",
+    "expectedStandardNumber": "IS 14543:2016",
+    "expectedClause": "9.1",
+    "expectedSourceSnippet": "BIS Central Laboratory (Sahibabad/Delhi NCR) and recognized NABL testing facilities in Maharashtra (e.g. Mumbai/Pune) are accredited for chemical, microbiological and pesticide residue testing for IS 14543.",
+    "groundTruthAnswerSummary": "You can test at BIS Central Laboratory (Delhi NCR) or BIS Recognized Private Testing Laboratories in Mumbai/Pune such as Reliable Analytical Laboratories or Shiva Analyticals, fully accredited for IS 14543 parameters.",
+    "category": "Testing & Labs"
+  }
+]

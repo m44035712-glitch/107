@@ -1,0 +1,357 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  CONSUMER
+  INDUSTRY
+  STUDENT_RESEARCHER
+  ADMIN
+}
+
+enum StandardStatus {
+  ACTIVE
+  UNDER_REVIEW
+  OUTDATED
+  WITHDRAWN
+  ARCHIVED
+}
+
+enum CertificationSchemeType {
+  SCHEME_I_ISI
+  SCHEME_II_CRS
+  SCHEME_III_COPC
+  SCHEME_IV_COPC_PROCESS
+  SCHEME_IV_COC
+  SCHEME_V_MANAGEMENT_PROCESS
+  SCHEME_VI_SUPPLIER_DECLARATION
+  SCHEME_VII_PILOT_PRODUCTION
+  SCHEME_VIII_CUSTOM_IMPORT
+  SCHEME_IX_ECO_MARK
+  SCHEME_ECO_MARK
+  SCHEME_X_FOREIGN_MANUFACTURERS
+  SCHEME_FMCS
+  SCHEME_HALLMARK
+  HALLMARKING
+  MANAGEMENT_SYSTEMS_MSCS
+  LABORATORY_RECOGNITION_LRS
+}
+
+enum FeedbackType {
+  HELPFUL
+  NOT_HELPFUL
+  REPORTED
+}
+
+model User {
+  id                String       @id @default(uuid())
+  email             String       @unique
+  passwordHash      String
+  fullName          String
+  role              UserRole     @default(INDUSTRY)
+  organization      String?
+  designation       String?
+  phoneNumber       String?
+  preferredLanguage String       @default("en")
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  chatSessions      ChatSession[]
+  feedbacks         Feedback[]
+  queryLogs         QueryLog[]
+
+  @@map("users")
+}
+
+model ChatSession {
+  id          String      @id @default(uuid())
+  title       String
+  userId      String?
+  language    String      @default("en")
+  roleMode    String      @default("INDUSTRY")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user        User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages    Message[]
+
+  @@map("chat_sessions")
+}
+
+model Message {
+  id                    String       @id @default(uuid())
+  sessionId             String
+  role                  String       // 'user' | 'assistant' | 'system'
+  content               String       @db.Text
+  originalLanguage      String?
+  intent                String?
+  confidence            String?
+  citations             Json?        // Array of Citation objects
+  evidence              Json?        // Array of Evidence objects
+  suggestedFollowUps    Json?        // Array of strings
+  groundingStatus       Json?        // GroundingValidationResult
+  sourceFreshnessWarning String?
+  feedback              String?
+  createdAt             DateTime     @default(now())
+
+  session               ChatSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  feedbacks             Feedback[]
+
+  @@map("messages")
+}
+
+model Standard {
+  id                    String          @id @default(uuid())
+  standardNumber        String          @unique // e.g., "IS 10500:2012"
+  title                 String
+  year                  Int
+  department            String
+  division              String
+  status                StandardStatus  @default(ACTIVE)
+  scope                 String          @db.Text
+  abstract              String          @db.Text
+  keywords              Json            // string[]
+  isMandatory           Boolean         @default(false)
+  qcoNotificationNumber String?
+  qcoDate               String?
+  sourceUrl             String
+  publicationDate       String
+  lastUpdatedDate       String
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  clauses               StandardClause[]
+  testingRequirements   TestingRequirement[]
+  documents             Document[]
+
+  @@index([standardNumber])
+  @@index([division])
+  @@index([isMandatory])
+  @@map("standards")
+}
+
+model StandardClause {
+  id            String    @id @default(uuid())
+  standardId    String
+  clauseNumber  String    // e.g., "4.2"
+  title         String
+  content       String    @db.Text
+  pageNumber    Int
+  tables        Json?     // Array of table objects
+  subclauses    Json?
+
+  standard      Standard  @relation(fields: [standardId], references: [id], onDelete: Cascade)
+
+  @@index([standardId, clauseNumber])
+  @@map("standard_clauses")
+}
+
+model Document {
+  id              String          @id @default(uuid())
+  title           String
+  standardNumber  String?
+  standardId      String?
+  category        String          @default("STANDARD")
+  division        String?
+  sourceUrl       String
+  version         String?
+  publicationDate String
+  lastUpdatedDate String
+  status          StandardStatus  @default(ACTIVE)
+  isIngested      Boolean         @default(true)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  standard        Standard?       @relation(fields: [standardId], references: [id], onDelete: SetNull)
+  chunks          DocumentChunk[]
+
+  @@map("documents")
+}
+
+model DocumentChunk {
+  id              String          @id @default(uuid())
+  documentId      String
+  standardNumber  String
+  section         String?
+  clause          String
+  subclause       String?
+  page            Int
+  content         String          @db.Text
+  vectorEmbedding Unsupported("vector(1536)")?
+  metadata        Json?
+  status          StandardStatus  @default(ACTIVE)
+  createdAt       DateTime        @default(now())
+
+  document        Document        @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@index([standardNumber])
+  @@index([clause])
+  @@map("document_chunks")
+}
+
+model CertificationScheme {
+  id                         String                  @id @default(uuid())
+  schemeType                 CertificationSchemeType
+  name                       String
+  code                       String                  @unique
+  description                String                  @db.Text
+  applicability              String                  @db.Text
+  applicableSectors          Json                    // string[]
+  mandatoryProductCategories Json                    // string[]
+  keySteps                   Json                    // RoadmapStep[]
+  requiredDocuments          Json                    // string[]
+  feeStructureSummary        String                  @db.Text
+  surveillanceFrequency      String
+  validityPeriod             String
+  officialGuidelineUrl       String
+
+  @@map("certification_schemes")
+}
+
+model TestingRequirement {
+  id                     String    @id @default(uuid())
+  standardNumber         String
+  standardId             String?
+  testName               String
+  testMethod             String
+  clauseNumber           String
+  description            String    @db.Text
+  acceptanceCriteria     String    @db.Text
+  samplingRequirements   String    @db.Text
+  testingFrequency       String
+  requiredEquipment      Json      // string[]
+  isDestructive          Boolean   @default(false)
+  isMandatoryRoutineTest Boolean   @default(true)
+  applicableProducts     Json      // string[]
+  sourceUrl              String?
+
+  standard               Standard? @relation(fields: [standardId], references: [id], onDelete: SetNull)
+
+  @@index([standardNumber])
+  @@index([testName])
+  @@map("testing_requirements")
+}
+
+model Laboratory {
+  id                   String    @id @default(uuid())
+  name                 String
+  labCode              String    @unique
+  address              String
+  city                 String
+  state                String
+  pincode              String
+  contactPerson        String?
+  contactEmail         String
+  contactPhone         String
+  recognitionStatus    String    @default("RECOGNIZED")
+  validUpTo            String
+  accreditationBody    String    @default("NABL (ISO/IEC 17025)")
+  recognizedStandards  Json      // string[]
+  testingCapabilities  Json      // string[]
+  isNablAccredited     Boolean   @default(true)
+  isBisRecognized      Boolean   @default(true)
+  latitude             Float?
+  longitude            Float?
+  sourceUrl            String
+  lastUpdatedDate      String
+
+  @@index([city])
+  @@index([state])
+  @@map("laboratories")
+}
+
+model HallmarkingCentre {
+  id                String    @id @default(uuid())
+  centreName        String
+  centreCode        String    @unique
+  address           String
+  city              String
+  state             String
+  pincode           String
+  contactEmail      String
+  contactPhone      String
+  recognizedMetals  Json      // string[] e.g., ["GOLD", "SILVER"]
+  recognitionStatus String    @default("ACTIVE")
+  validUpTo         String
+  sourceUrl         String
+
+  @@index([city])
+  @@index([state])
+  @@map("hallmarking_centres")
+}
+
+model Source {
+  id              String          @id @default(uuid())
+  title           String
+  url             String
+  documentType    String
+  standardNumber  String?
+  publicationDate String
+  status          StandardStatus  @default(ACTIVE)
+  verifiedBy      String          @default("BIS Portal Synchronizer")
+  lastVerifiedAt  DateTime        @default(now())
+
+  @@map("sources")
+}
+
+model Feedback {
+  id           String        @id @default(uuid())
+  userId       String?
+  messageId    String?
+  query        String        @db.Text
+  response     String        @db.Text
+  feedbackType FeedbackType
+  notes        String?       @db.Text
+  timestamp    DateTime      @default(now())
+
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  message      Message?      @relation(fields: [messageId], references: [id], onDelete: SetNull)
+
+  @@map("feedbacks")
+}
+
+model QueryLog {
+  id                String    @id @default(uuid())
+  userId            String?
+  queryText         String    @db.Text
+  detectedLanguage  String    @default("en")
+  intent            String
+  latencyMs         Int
+  topStandardMatch  String?
+  confidence        String?
+  createdAt         DateTime  @default(now())
+
+  user              User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([intent])
+  @@index([detectedLanguage])
+  @@map("query_logs")
+}
+
+model EvaluationResult {
+  id                          String    @id @default(uuid())
+  benchmarkVersion            String    @default("v1.0")
+  totalEvaluated              Int
+  recallAt1                   Float
+  recallAt3                   Float
+  recallAt5                   Float
+  precisionAt1                Float
+  precisionAt3                Float
+  mrr                         Float
+  top1Accuracy                Float
+  top3Accuracy                Float
+  faithfulnessScore           Float
+  contextRelevanceScore       Float
+  answerRelevanceScore        Float
+  citationCorrectnessRate     Float
+  averageLatencyMs            Float
+  timestamp                   DateTime  @default(now())
+
+  @@map("evaluation_results")
+}

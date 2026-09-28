@@ -1,0 +1,13 @@
+{
+  "extends": "@bis/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "lib": ["ES2022"],
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src/**/*"]
+}

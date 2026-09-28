@@ -1,0 +1,14 @@
+{
+  "extends": "@bis/typescript-config/base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "preserve",
+    "lib": ["ES2015", "DOM", "DOM.Iterable"],
+    "declaration": true,
+    "declarationMap": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*"]
+}

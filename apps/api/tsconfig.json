@@ -1,0 +1,10 @@
+{
+  "extends": "@bis/typescript-config/node.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "moduleResolution": "bundler",
+    "module": "preserve"
+  },
+  "include": ["src/**/*"]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@bis/api-client",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@bis/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@bis/typescript-config": "workspace:*",
+    "@bis/eslint-config": "workspace:*",
+    "typescript": "^5.5.4"
+  }
+}

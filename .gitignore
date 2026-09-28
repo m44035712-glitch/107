@@ -1,0 +1,31 @@
+# Node
+node_modules
+.pnpm-debug.log*
+
+# Next.js
+.next/
+out/
+
+# NestJS / Build
+dist/
+coverage/
+
+# Environment
+.env
+.env.local
+.env.production
+.env.test
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Turbo
+.turbo/
+
+# Prisma
+dev.db
+dev.db-journal
